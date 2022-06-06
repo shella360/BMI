@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI-Vue</title>
+    <link rel="stylesheet" href="./css/BMI.css">
+</head>
+<!-- https://vuejs.org/guide/quick-start.html -->
+<body>
+   
+    <div class="container" id="app">
+        <h1>BMI計算機</h1>
+        <P>身體質量指數(Body Mass Index,簡稱BMI)是公認用來估計肥胖程度的方法</P>
+        <p>BMI=體重(公斤)/身高的平方(公尺)</p>
+        <div class="row">
+            男 <input type="radio" value="0" v-model="gender">&nbsp;
+            女 <input type="radio" value="1" v-model="gender">&nbsp;
+            <span>我的身高:<input id="height" type="number" min="0" v-model="height">公分</span>
+            <span>我的體重:<input id="weight" type="number" min="0" v-model="weight">公斤</span>
+            <button id="calc">計算</button>
+            <button id="reset">重新計算</button>
+        </div>
+        <div class="row">BMI:<li id=BMI>結果</li>
+        </div>
+        <table>
+            <tr>
+                <th colspan="3">BMI值</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td>男性</td>
+                <td>女性</td>
+            </tr>
+            <tr>
+                <td :class="{active:isActive('1')}">體重過輕</td>
+                <td :class="{active:isActive('10')}">&lt; 20</td>                    
+                <td :class="{active:isActive('11')}">&lt; 19</td>    
+            </tr>
+            <tr>
+                <td :class="{active:isActive('2')}">正常範圍</td>
+                <td :class="{active:isActive('20')}">20-25</td>
+                <td :class="{active:isActive('21')}">19-25</td>
+            </tr>
+            <tr>
+                <td :class="{active:isActive('3')}">體重過重</td>
+                <td :class="{active:isActive('30')}">25-30</td>
+                <td :class="{active:isActive('31')}">25-30</td>
+            </tr>
+            <tr>
+                <td :class="{active:isActive('4')}">肥胖</td>
+                <td :class="{active:isActive('40')}">30-40</td>
+                <td :class="{active:isActive('41')}">30-40</td>
+            </tr>
+            <tr>
+                <td :class="{active:isActive('5')}">病態肥胖</td>
+                <td :class="{active:isActive('50')}">&gt;40</td>
+                <td :class="{active:isActive('51')}">&gt;40</td>
+            </tr>
+
+        </table>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+
+    <script>
+        //Vue採用關注點分離
+        Vue.createApp({
+            //data:函式=>處理資料
+            data:function() {
+                return{
+                    height:0,
+                    weight:0,
+                    gender:0,
+                    my_active:'0',
+                }
+            },
+            //methods:方法=>物件
+            methods:{
+                bmi(){
+                console.log(this.gender);
+                  answer=this.weight/((this.height/100)**2);
+                  this.my_active=answer ? this.active_result(answer,this.gender):'0';
+                  return answer ? answer.toFixed(2) :0;
+                },
+                isActive(td1_or_td23){
+                    console.log(td1_or_td23,'this.my_active',this.my_active);
+                    if (td1_or_td23.lenght==1) {
+                        return(this.my_active[0]==td1_or_td23)
+                    }else{
+                        return(this.my_active===td1_or_td23)
+                    }
+                },
+                active_result(answer,gender){
+                    if(answer >40){
+                        return '5'+gender;
+                    }
+                    if (answer >30) {
+                        return '4'+gender;
+                    }
+                    if (answer >20) {
+                        return '3'+gender;
+                    }
+                    if (answer >20 &&gender===0) {
+                        return '2'+gender;
+                    }
+                    if (answer >=19 &&gender===1) {
+                        return '2'+gender;
+                    }
+                    return '1'+gender;
+                }
+               
+            },
+            //mounted 函式=>做初始化=>一開始的時候只執行一次
+            mounted:function(){
+                console.log(456);
+            },
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
